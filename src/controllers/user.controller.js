@@ -346,7 +346,7 @@ const getChannelDetails = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "subscriber",
+        foreignField: "channel",
         as: "subscribers"
       }
     },
@@ -354,7 +354,7 @@ const getChannelDetails = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "channel",
+        foreignField: "subscriber",
         as: "subscribedTo"
       }
     },
@@ -367,7 +367,9 @@ const getChannelDetails = asyncHandler(async (req, res) => {
           $size: "$subscribedTo"
         },
        isSubscribed: {
-        if: {$in: [req.user?._id, "$subscribers"]}
+        if: {$in: [req.user?._id, "$subscribers.subscriber"]},
+        then: true,
+        else: false
        }
       }
     },
@@ -391,7 +393,7 @@ const getChannelDetails = asyncHandler(async (req, res) => {
 
   return res
   .status(200)
-  .json(new ApiResponse(200, {channel}, "Channel details fetched successfully"));
+  .json(new ApiResponse(200, channel[0], "Channel details fetched successfully"));
 })
 
 export {
