@@ -468,4 +468,5 @@ export {
   changeAvatar,
   changeCoverImage,
   getChannelDetails,
+  getWatchHistory
 };
